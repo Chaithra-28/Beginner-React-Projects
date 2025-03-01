@@ -8,17 +8,28 @@ const Meals = () => {
 
     const [items, setItems] = useState([])
 
-    useEffect(() => {
-        
-        axios.get("https://www.themealdb.com/api/json/v1/1/filter.php?c=Seafood")
-        .then(res => {
-            //console.log(res.data.meals);
-            setItems(res.data.meals) //sending the data to 'items'
-        }).catch(err => {
-            console.log(err);
-        })
+    
+    //If API call happens frequently (e.g., polling or re-fetching), it's good to abort requests on unmount:
 
-    }, [])
+    useEffect(() => {
+    const controller = new AbortController();
+    const fetchData = async () => {
+        try {
+            const res = await axios.get("https://www.themealdb.com/api/json/v1/1/filter.php?c=Seafood", {
+                signal: controller.signal
+            });
+            setItems(res.data.meals);
+        } catch (err) {
+            if (err.name !== "AbortError") {
+                console.log(err);
+            }
+        }
+    };
+
+    fetchData();
+
+    return () => controller.abort(); // Cleanup on unmount
+}, []);
 
     const itemsList = items.map(({ strMeal, strMealThumb, idMeal }) => {
         return (
