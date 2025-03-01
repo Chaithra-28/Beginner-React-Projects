@@ -1,55 +1,52 @@
-import React, { useState } from 'react'
-
+import React, { useState } from 'react';
 import "../style.css";
 
 const Calculator = () => {
-
     const [inputValue, setInputValue] = useState('');
 
-    const display = (value) => setInputValue(inputValue + value);
+    const handleClick = (value) => {
+        if (value === '=') {
+            try {
+                setInputValue(String(Function(`"use strict"; return (${inputValue})`)())); // Safe alternative to eval
+            } catch {
+                setInputValue('Error');
+            }
+        } else if (value === 'C') {
+            setInputValue('');
+        } else {
+            setInputValue((prev) => prev + value);
+        }
+    };
 
-    const calculate = () => setInputValue(eval(inputValue))
+    const buttons = [
+        'C', '/', '*', '7', '8', '9', '-', 
+        '4', '5', '6', '+', '1', '2', '3', 
+        '0', '00', '.', '='
+    ];
 
-    const clear = () => setInputValue('');
+    return (
+        <form className='calculator' name='calci'>
+            <input 
+                type="text" 
+                className="value" 
+                value={inputValue}
+                readOnly
+            />
+            
+            <div className="buttons-grid"> 
+                {buttons.map((btn) => (
+                    <span 
+                        key={btn}
+                        className={btn === 'C' ? "num clear" : btn === '=' ? "num equal" : btn === '+' ? "plus" : ""}
+                        onClick={() => handleClick(btn)}
+                    >
+                        {btn}
+                    </span>
+                ))}
+            </div>
 
-  return (
-
-    <form className='calculator' name='calci'>
-        
-        <input 
-        type="text" 
-        className="value" 
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}/>
-
-        <span className="num clear" onClick={() => clear()}>c</span>
-        
-        <span onClick={() => display('/')}>/</span>
-        <span onClick={() => display('*')}>*</span>
-        <span onClick={() => display('7')}>7</span>
-        <span onClick={() => display('8')}>8</span>
-        <span onClick={() => display('9')}>9</span>
-        <span onClick={() => display('-')}>-</span>
-        <span onClick={() => display('4')}>4</span>
-        <span onClick={() => display('5')}>5</span>
-        <span onClick={() => display('6')}>6</span>
-        <span  className='plus' onClick={() => display('+')}>
-            +
-        </span>
-
-        <span onClick={() => display('1')}>1</span>
-        <span onClick={() => display('2')}>2</span>
-        <span onClick={() => display('3')}>3</span>
-        <span onClick={() => display('0')}>0</span>
-        <span onClick={() => display('00')}>00</span>
-        <span onClick={() => display('.')}>.</span>
-        <span  className='num equal' onClick={() => calculate()}>
-            =
-        </span>
-        
-    </form>
-
-  )
+        </form>
+    );
 }
 
-export default Calculator
+export default Calculator;
