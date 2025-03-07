@@ -1,0 +1,16 @@
+.color-title {
+    margin-top: 2rem;
+}
+
+.all {
+    background: linear-gradient(blue, crimson);
+}
+
+.sidebar-label-container input[type="radio"]:checked + .checkmark {
+    outline: 2px solid black; /* Adds a black outline when selected */
+    box-shadow: 0 0 3px black; /* Slight glow effect to make it visible */
+}
+
+/*Explanation:
+outline: 2px solid black; → Adds a black border around the white button when selected.
+box-shadow: 0 0 3px black; → Gives a slight glow effect, making it stand out.*/
